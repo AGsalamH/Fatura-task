@@ -13,11 +13,11 @@ const userSchema = new Schema({
          required: true
     },
 
-    phone: {
+    phone: { // Optional
         type: String,
         required: false
     }
-});
+}, {timestamps: true});
 
 // Pre Hook that Checks if this email exists or not before saving it .
 userSchema.pre('save', async function (next) {
