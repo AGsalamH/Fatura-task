@@ -54,8 +54,8 @@ userSchema.methods.comparePasswords = async function (password) {
 }
 
 // Model method
-userSchema.statics.emailExists = async function (email) {
-    const user = await this.findOne({email});
+userSchema.statics.userExist = async function (username) {
+    const user = await this.findOne({username});
     if(!user){
         const error = new mongoose.Error('User not found!');
         error.statusCode = 404;
