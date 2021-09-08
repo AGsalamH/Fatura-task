@@ -1,8 +1,8 @@
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
-const { Schema } = mongoose;
 
-const userSchema = new Schema({
+
+const userSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true
@@ -16,7 +16,15 @@ const userSchema = new Schema({
     phone: { // Optional
         type: String,
         required: false
-    }
+    },
+
+    roles: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Role'
+        }
+      ]
+
 }, {timestamps: true});
 
 // Pre Hook that Checks if this email exists or not before saving it .
