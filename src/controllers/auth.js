@@ -1,12 +1,23 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const { Role, User, ROLES } = require('../models');
 
 
 // POST /signup
 const signup = async (req, res, next) => {
+    const { username, password, phone, roles } = req.body;
     try {
-        const user = new User({...req.body});
+        const user = new User({ username, password, phone });
+
+        if (roles) { // roles sent in req.body ??
+            const userRoles = await Role.find({name: {$in: roles}});
+            user.roles = userRoles.map(role => role._id);
+        } else {
+            const userRole = await Role.findOne({name: 'user'});
+            user.roles = [userRole._id];            
+        }
+
         const savedUser = await user.save();
+        
         res.status(201).json({
             ok: 1,
             user: savedUser

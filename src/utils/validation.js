@@ -1,4 +1,5 @@
 const { body } = require('express-validator');
+const { ROLES } = require('../models');
 
 
 const userValidationRules = () => [
@@ -6,7 +7,17 @@ const userValidationRules = () => [
         .notEmpty().withMessage('username can NOT be blank!')
         .isAlphanumeric().withMessage('username must be Alphanumeric!'),
     body('password', 'Password must be at least 6 letters!').isLength({min: 6}),
-    body('phone', 'Phone number must be at least 11 numbers').optional().isLength({min:11})
+    body('phone', 'Phone number must be at least 11 numbers').optional().isLength({min:11}),
+    body('roles')
+        .optional()
+        .isArray().withMessage('Should be array of valid roles')
+        .custom((value, { req }) => {
+            const rolesExist = value.every(role => ROLES.includes(role));
+            if (rolesExist) {
+                return true;
+            }
+            throw new Error(`Failed! Invalid role assigned!!`)
+        })
 ];
 
 // const loginValidationRules = () => [

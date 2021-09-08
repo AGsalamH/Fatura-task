@@ -5,8 +5,9 @@ const cors = require('cors');
 
 // Routes
 const authRoutes = require('./routes/auth');
+const Role = require('./models/Role');
 
-
+// Instantiate express app
 const app = express();
 
 // App level configs
@@ -15,14 +16,19 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 
-// Routes
-app.use('/', authRoutes);
+/**
+ * Router Middleware
+ * Router - /api/auth/*
+ * Method - POST
+ */
+app.use('/api/auth', authRoutes);
 
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
 .then(result => {
     console.log('MongoDB connected successfully ...');
+    Role.initializeRoles(); // creates ['user', 'admin', 'moderator'] roles
 }).catch(err => {
     console.log(err);
     process.exit();
