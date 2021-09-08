@@ -6,7 +6,9 @@ const userValidationRules = () => [
     body('username')
         .notEmpty().withMessage('username can NOT be blank!')
         .isAlphanumeric().withMessage('username must be Alphanumeric!'),
-    body('password', 'Password must be at least 6 letters!').isLength({min: 6}),
+    body('password')
+        .notEmpty().withMessage('password can NOT be blank!')
+        .isLength({min: 6}).withMessage('Password must be at least 6 letters!'),
     body('phone', 'Phone number must be at least 11 numbers').optional().isLength({min:11}),
     body('roles')
         .optional()
@@ -20,13 +22,13 @@ const userValidationRules = () => [
         })
 ];
 
-// const loginValidationRules = () => [
-//     body('username').notEmpty().isAlphanumeric(),
-//     body('password').isLength({min: 6})
-// ];
+const loginValidationRules = () => [
+    body('username').notEmpty().isAlphanumeric(),
+    body('password').isLength({min: 6})
+];
 
 
 module.exports = {
     userValidationRules,
-    // loginValidationRules
+    loginValidationRules
 }

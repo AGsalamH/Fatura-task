@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const { signup, login } = require('../controllers/auth');
 const validate = require('../middlewares/validate');
-const { userValidationRules } = require('../utils/validation');
+const { userValidationRules, loginValidationRules } = require('../utils/validation');
 const verifyToken = require('../middlewares/verifyToken');
 const authorization = require('../middlewares/authorization');
 
@@ -10,7 +10,7 @@ const authorization = require('../middlewares/authorization');
 router.post('/signup', userValidationRules(), validate, signup);
 
 // POST /login
-router.post('/login', login);
+router.post('/login', loginValidationRules(), validate, login);
 
 
 // Just for testing authorization
