@@ -3,9 +3,12 @@ const mongoose = require('mongoose');
 const express = require('express');
 const cors = require('cors');
 
+// Models
+const Role = require('./models/Role');
+
 // Routes
 const authRoutes = require('./routes/auth');
-const Role = require('./models/Role');
+const usersRoutes = require('./routes/users');
 
 // Middlewares
 const { urlNotFound, errorHandling  } = require('./middlewares/errorHandling');
@@ -20,11 +23,14 @@ app.use(express.urlencoded({extended: true}));
 
 
 /**
- * Router Middleware
- * Router - /api/auth/*
- * Method - POST
- */
+ * Router Middleware: Authentication router
+*/
 app.use('/api/auth', authRoutes);
+
+/**
+ * Router Middleware to test the Authorization
+*/
+ app.use('/api/users', usersRoutes);
 
 
 /**
