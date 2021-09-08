@@ -7,10 +7,13 @@ const cors = require('cors');
 const authRoutes = require('./routes/auth');
 const Role = require('./models/Role');
 
+// Middlewares
+const { urlNotFound, errorHandling  } = require('./middlewares/errorHandling');
+
 // Instantiate express app
 const app = express();
 
-// App level configs
+// App level Middlewares
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -22,6 +25,13 @@ app.use(express.urlencoded({extended: true}));
  * Method - POST
  */
 app.use('/api/auth', authRoutes);
+
+
+/**
+ * Error handling Middlewares
+ */
+app.use(urlNotFound); // 404
+app.use(errorHandling);
 
 
 // Connect to MongoDB
