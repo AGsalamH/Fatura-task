@@ -23,8 +23,12 @@ const userValidationRules = () => [
 ];
 
 const loginValidationRules = () => [
-    body('username').notEmpty().isAlphanumeric(),
-    body('password').isLength({min: 6})
+    body('username')
+        .notEmpty().withMessage('username can NOT be blank!')
+        .isAlphanumeric().withMessage('username must be Alphanumeric!'),
+    body('password')
+        .notEmpty().withMessage('password can NOT be blank!')
+        .isLength({min: 6}).withMessage('Password must be at least 6 letters!')
 ];
 
 
