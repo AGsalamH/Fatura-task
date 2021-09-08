@@ -1,13 +1,15 @@
-### 
+### Authentication API with JWT Token in Node.js
 - TODO:
-    - error handling
     - refresh token
     - logout
+    - testing
+    - docs
 - DONE:
     - Login
     - Signup
+    - Validation
     - Authorization
-    - 
+    - error handling
 
 - Libraries
     - express => is for building the Rest apis
