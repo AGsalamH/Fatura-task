@@ -3,7 +3,6 @@
     - error handling
     - refresh token
     - logout
-    - Authorization X
 - DONE:
     - Login
     - Signup
