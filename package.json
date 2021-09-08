@@ -1,7 +1,7 @@
 {
   "name": "auth-service",
   "version": "1.0.0",
-  "description": "",
+  "description": "Node.js + MongoDB: JWT Authentication & Authorization",
   "main": "./src/app.js",
   "scripts": {
     "start": "node ./src/app.js",
