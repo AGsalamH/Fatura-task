@@ -1,5 +1,11 @@
 const { validationResult } = require('express-validator');
-
+/**
+ * Middleware: Catches any validation errors.
+ * Giving control to the next middleware if no errors occured
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
 module.exports = (req, res, next) => {
     const errors = validationResult(req);
 

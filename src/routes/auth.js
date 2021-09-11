@@ -1,14 +1,21 @@
 const router = require('express').Router();
-const { signup, login } = require('../controllers/auth');
+const authController = require('../controllers/auth');
 const validate = require('../middlewares/validate');
-const { userValidationRules, loginValidationRules } = require('../utils/validation');
+const { userValidationRules, loginValidationRules, logoutValidationRules } = require('../utils/validation');
+
+const { body } = require('express-validator');
 
 
-// POST /signup
-router.post('/signup', userValidationRules(), validate, signup);
+// POST /api/auth/signup
+router.post('/signup', userValidationRules(), validate, authController.signup);
 
-// POST /login
-router.post('/login', loginValidationRules(), validate, login);
+// POST /api/auth/login
+router.post('/login', loginValidationRules(), validate, authController.login);
 
+// POST /api/auth/logout
+router.post('/logout', logoutValidationRules(), validate, authController.logout);
+
+// POST /api/auth/refresh-token
+router.post('/refresh-token', body('refreshToken').notEmpty().isJWT(), validate, authController.refreshTokenHandler);
 
 module.exports = router;

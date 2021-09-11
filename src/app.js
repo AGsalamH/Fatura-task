@@ -3,15 +3,16 @@ const mongoose = require('mongoose');
 const express = require('express');
 const cors = require('cors');
 
-// Models
-const Role = require('./models/Role');
-
 // Routes
 const authRoutes = require('./routes/auth');
 const usersRoutes = require('./routes/users');
 
 // Middlewares
 const { urlNotFound, errorHandling  } = require('./middlewares/errorHandling');
+
+// Config
+const appConfig = require('../config/app.config');
+const dbConfig = require('../config/db');
 
 // Instantiate express app
 const app = express();
@@ -41,17 +42,16 @@ app.use(errorHandling);
 
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect(dbConfig.MONGO_URI)
 .then(result => {
     console.log('MongoDB connected successfully ...');
-    Role.initializeRoles(); // creates ['user', 'admin', 'moderator'] roles
 }).catch(err => {
     console.log(err);
     process.exit();
 });
 
 // Run Server
-const PORT = process.env.PORT || 5000;
+const PORT = appConfig.PORT;
 app.listen(PORT, () => {
     console.log(`Server is listening on PORT: ${PORT}`);
 });
