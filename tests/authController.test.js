@@ -14,6 +14,10 @@ const { signup, login, refreshTokenHandler, logout } = require('../src/controlle
 
 
 describe('Auth controller', () => {
+    let tokens = {
+        accessToken: '',
+        refreshToken: ''
+    };
     // --------- Signup -------------
     describe('signup', () => {
         it('Should create new user', function (done) {
@@ -60,6 +64,10 @@ describe('Auth controller', () => {
                     expect(res.status).to.equal(200);
                     expect(res.body).to.have.property('accessToken');
                     expect(res.body).to.have.property('refreshToken');
+
+                    tokens.accessToken = res.body.accessToken;
+                    tokens.refreshToken = res.body.refreshToken;
+
                     done();
                 })
         });
@@ -95,6 +103,41 @@ describe('Auth controller', () => {
                 })
         });
 
+    })
+
+
+    // -------- refresh token ------------------
+    describe('refreshToken', function() {
+        it('Should create new Access Token', function(done) {
+            chai.request(server)
+                .post('/api/auth/refresh-token')
+                .send({
+                    refreshToken: tokens.refreshToken
+                })
+                .end(function(err, res){
+                    expect(res.status).to.equal(200);
+                    expect(res.body).to.have.property('accessToken');
+                    tokens.accessToken = res.body.accessToken;
+                    done();
+                });
+        });
+    });
+
+
+    // -------------- logout -------------------
+    describe('Logout', function() {
+        it('Should delete the refresh token and the access token', function(done) {
+            chai.request(server)
+                .post('/api/auth/logout')
+                .send({
+                    accessToken: tokens.accessToken,
+                    refreshToken: tokens.refreshToken
+                })
+                .end(function(err, res) {
+                    expect(res.status).to.equal(204);
+                    done();
+                });
+        });
     })
 
 
