@@ -52,6 +52,6 @@ mongoose.connect(dbConfig.MONGO_URI)
 
 // Run Server
 const PORT = appConfig.PORT;
-app.listen(PORT, () => {
+module.exports = app.listen(PORT, () => {
     console.log(`Server is listening on PORT: ${PORT}`);
 });

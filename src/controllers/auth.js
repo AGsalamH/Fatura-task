@@ -28,7 +28,6 @@ const signup = async (req, res, next) => {
             user: savedUser
         });
     } catch (error) {
-        console.log(error);
         next(error);
     }
 }
@@ -56,7 +55,6 @@ const login = async (req, res, next) => {
         });
 
     } catch (error) {
-        console.log(error);
         next(error);
     }    
 }
@@ -71,7 +69,6 @@ const logout = async (req, res, next) => {
         await blackListToken(accessToken);
         res.status(204).json({message: 'Logged out!'});
     } catch (error) {
-        console.log(error);
         next(error);
     }
 };
@@ -85,7 +82,6 @@ const refreshTokenHandler = async (req, res, next) => {
         res.json({ accessToken });
 
     } catch (error) {
-        console.log(error);
         next(error);
     }
 };
