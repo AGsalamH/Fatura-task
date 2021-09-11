@@ -1,5 +1,15 @@
 const jwt = require('jsonwebtoken');
-const { Role, User, ROLES } = require('../models');
+
+const { User, RefreshToken, BlackList } = require('../models');
+const jwtConfig = require('../../config/jwtAuth');
+
+const { authenticate } = require('../utils/auth');
+const { 
+    generateAccessToken, 
+    generateRefreshToken, 
+    validateRefreshToken, 
+    blackListToken 
+} = require('../utils/jwtTokens');
 
 
 // POST /signup
@@ -9,13 +19,8 @@ const signup = async (req, res, next) => {
         const user = new User({ username, password, phone });
 
         if (roles) { // roles sent in req.body ??
-            const userRoles = await Role.find({name: {$in: roles}});
-            user.roles = userRoles.map(role => role._id);
-        } else {
-            const userRole = await Role.findOne({name: 'user'});
-            user.roles = [userRole._id];            
+            user.roles = roles;
         }
-
         const savedUser = await user.save();
         
         res.status(201).json({
@@ -33,24 +38,21 @@ const signup = async (req, res, next) => {
 const login = async (req, res, next) => {
     try {
         const { username, password } = req.body;
+        const user = await authenticate(username, password); // Check if username and password matches
 
-        const user = await User.userExist(username);
-        await user.comparePasswords(password);
-
-        // At this point everything is fine
-        // Let's create JWT token
-        const token = jwt.sign({
-            _id: user._id
-        }, process.env.JWT_TOKEN_SECRET, {
-            expiresIn: 86400 // 24 hours
-        });
-
+        // At this point user is authenticated
+        // Let's create JWT tokens
+        const accessToken = generateAccessToken(user._id);
+        // If there is any refresh token exists delete them before creating new one
+        await RefreshToken.deleteMany({userId: user._id});
+        const refreshToken = await generateRefreshToken(user._id);
+        
         // Send token to client in response header
-        res.setHeader('Authorization', token);
+        res.setHeader('Authorization', accessToken);
         res.json({
             ok: 1,
-            msg: 'You are now loggedIn :)',
-            token
+            accessToken,
+            refreshToken: refreshToken.token
         });
 
     } catch (error) {
@@ -60,7 +62,38 @@ const login = async (req, res, next) => {
 }
 
 
+const logout = async (req, res, next) => {
+    try {
+        const { accessToken, refreshToken } = req.body;
+        
+        const refreshTokenObj = await validateRefreshToken(refreshToken);
+        await refreshTokenObj.deleteOne();
+        await blackListToken(accessToken);
+        res.status(204).json({message: 'Logged out!'});
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }
+};
+
+
+const refreshTokenHandler = async (req, res, next) => {
+    const { refreshToken } = req.body;
+    try {
+        const refreshTokenObj = await validateRefreshToken(refreshToken);
+        const accessToken = generateAccessToken(refreshTokenObj.userId);
+        res.json({ accessToken });
+
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }
+};
+
+
 module.exports = {
     signup,
-    login
+    login,
+    logout,
+    refreshTokenHandler
 }

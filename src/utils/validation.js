@@ -2,6 +2,11 @@ const { body } = require('express-validator');
 const { ROLES } = require('../models');
 
 
+/**
+ * Validation used when registering a new user
+ * @returns {*} validationChain
+ */
+
 const userValidationRules = () => [
     body('username')
         .notEmpty().withMessage('username can NOT be blank!')
@@ -22,6 +27,11 @@ const userValidationRules = () => [
         })
 ];
 
+
+/**
+ * Validation used to login a user
+ * @returns {*} validationChain
+ */
 const loginValidationRules = () => [
     body('username')
         .notEmpty().withMessage('username can NOT be blank!')
@@ -32,7 +42,22 @@ const loginValidationRules = () => [
 ];
 
 
+/**
+ * Validation the incoming tokens in order to logout the user
+ * @returns {*} validationChain
+ */
+const logoutValidationRules = () => [
+    body('accessToken')
+        .notEmpty().withMessage('accessToken is required!')
+        .isJWT().withMessage('Invalid JWT token format!'),
+    body('accessToken')
+        .notEmpty().withMessage('refreshToken Is required!')
+        .isJWT().withMessage('Invalid JWT token format!')
+];
+
+
 module.exports = {
     userValidationRules,
-    loginValidationRules
+    loginValidationRules,
+    logoutValidationRules
 }
