@@ -1,5 +1,9 @@
+const ROLES = ["user", "admin", "moderator"];
+
+
 module.exports = {
     User: require('./User'),
-    Role: require('./Role'),
-    ROLES: ['user', 'admin', 'moderator']
+    RefreshToken: require('./RefreshToken'),
+    BlackList: require('./BlackList'),
+    ROLES: ROLES
 }
