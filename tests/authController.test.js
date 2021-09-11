@@ -3,6 +3,8 @@ const { expect } = chai;
 const chaiHTTP = require('chai-http');
 const faker = require('faker');
 
+const { User } = require('../src/models');
+
 const server = require('../src/app');
 
 chai.use(chaiHTTP);
@@ -93,6 +95,11 @@ describe('Auth controller', () => {
                 })
         });
 
+    })
+
+
+    after(async () => {
+        await User.deleteOne({username: 'testuser'});
     })
 
 });
